@@ -25,6 +25,8 @@ $ cat test.json | json-fmt
 }
 ```
 
+For more information about how to use the tool specify the help (`-h`) option.
+
 A common use case is to look for fields in a large number of unformatted JSON files.
 
 Here is an example of analyzing a color field in 10000 unformatted JSON files.

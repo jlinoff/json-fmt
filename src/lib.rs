@@ -49,16 +49,18 @@ pub fn format(opts: &Opts, input: &String) -> String {
     // Setup the indents.
     let mut indents = Vec::<String>::new();
     let mut indent_prefix = String::new();
-    for _ in 0..32 {
+    for _ in 0..opts.depth {
         indents.push(indent_prefix.to_string());
         for _ in 0..opts.indent {
             indent_prefix.push(' ');
         }
     }
 
+    // Format the JSON.
     let mut output = String::new();
     let vc: Vec<char> = input.chars().collect();
     let size = vc.len() as usize;
+    let mut max_nest = 0;
     let mut indent = 0 as i32;
     let mut nl = false;
     let mut i = 0 as usize;
@@ -71,6 +73,12 @@ pub fn format(opts: &Opts, input: &String) -> String {
             output.push(vc[i]);
             indent += 1;
             nl = true;
+            if indent as usize >= opts.depth {
+                err!("maximum depth ({}) exceeded, increase the --depth option and try again", opts.depth);
+            }
+            if max_nest < indent {
+                max_nest = indent;
+            }
         } else if vc[i] == '}' || vc[i] == ']' {
             indent -= 1;
             assert!(indent >= 0);
@@ -118,6 +126,7 @@ pub fn format(opts: &Opts, input: &String) -> String {
     if last_char != '\n' {
         output.push('\n');
     }
+    infov!(opts, 1, "max-nesting-level: {}", max_nest);
     output
 }
 

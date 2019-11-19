@@ -25,6 +25,7 @@ macro_rules! check_arg {
 pub struct Opts {
     pub program: String,
     pub program_base: String,
+    pub depth: usize,
     pub indent: usize,
     pub input: Option<String>,
     pub output: Option<String>,
@@ -38,6 +39,7 @@ impl Opts {
         let mut opts = Opts {
             program: cli[0].to_string(),
             program_base: base.to_string(),
+            depth: 32,
             indent: 4,
             input: None,  // stdin
             output: None,  // stdout
@@ -67,12 +69,20 @@ impl Opts {
                     err!("the option --input can only be specified once");
                 }
                 opts.input = Some(arg.to_string());
-            } else if opt == "-n" || opt == "--indent" {
+            } else if opt == "-I" || opt == "--indent" {
                 check_arg!(opt, i, cli.len());
                 let arg = &cli[i];
                 opts.indent = match arg.parse::<usize>() {
                     Ok(m) => m,
-                    Err(e) => {err!("invalid indent number: '{}' - {}", arg, e);},
+                    Err(e) => {err!("invalid indent: '{}' - {}", arg, e);},
+                };
+            }
+            else if opt == "-n" || opt == "--nesting-level" {
+                check_arg!(opt, i, cli.len());
+                let arg = &cli[i];
+                opts.depth = match arg.parse::<usize>() {
+                    Ok(m) => m,
+                    Err(e) => {err!("invalid depth: '{}' - {}", arg, e);},
                 };
             } else if opt == "-o" || opt == "--output" {
                 check_arg!(opt, i, cli.len());
@@ -86,6 +96,16 @@ impl Opts {
             } else if opt == "-V" || opt == "--version" {
                 println!("{} {}", base, VERSION);
                 process::exit(0);
+            } else if opt.len() > 2 && opt.starts_with("-") {
+                // Allow -vvh, etc.
+                // This is cheating from a pedantic perspective
+                // because UTF-8 is assumed. May change it later.
+                let chars: Vec<char> = opt.chars().collect();
+                for j in 1..chars.len() {
+                    let newopt = format!("-{}", chars[j]);
+                    pending.push_back(newopt);
+                }
+                info!("pending.len() == {}", pending.len());
             } else {
                 err!("unrecognized option: '{}'", opt);
             }
@@ -125,7 +145,13 @@ impl Opts {
     -i, --input FILE   The input file name. If this is not specified
                        the  input JSON data is read from stdin.
 
-    -n, --indent NUM   The preferred indentation. The default is 4.
+    -I, --indent NUM   The preferred indentation. The default is 4.
+
+    -n, --nesting-level NUM
+                       The maximum nesting level (depth).
+                       If the maximum depth is exceeded, the program
+                       will fail.
+                       The default is 32.
 
     -o, --output FILE  The output file name. If this is not specified
                        the formatted JSON data is written to stdout.
@@ -169,7 +195,16 @@ impl Opts {
     $ {p} -i test.json -o out.json
 
     # Example 5: change the indent level to 2
-    $ {p} -n 2 -i test.json -o out.json
+    $ {p} -I 2 -i test.json -o out.json
+
+    # Example 6: see what the program would do
+    #            using the verbose option
+    $ {p} -v -i test.json -o /dev/null
+    INFO:src/lib.rs:25: reading from file test.json
+    INFO:src/lib.rs:43: read 2380 bytes
+    INFO:src/lib.rs:129: max-nesting-level: 4
+    INFO:src/lib.rs:137: writing 3263 bytes to file /dev/null
+    INFO:src/lib.rs:17: done
 
 \x1b[1mVERSION\x1b[0m
     {v}

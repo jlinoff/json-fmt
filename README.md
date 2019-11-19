@@ -31,7 +31,7 @@ A common use case is to look for fields in a large number of unformatted JSON fi
 
 Here is an example of analyzing a color field in 10000 unformatted JSON files.
 ```bash
-$ time find files -type f | \
+$ find files -type f | \
     head -10000 | \
     xargs -L1 -I{} ~/bin/json-fmt -i {} | \
     grep '"colors"' | \

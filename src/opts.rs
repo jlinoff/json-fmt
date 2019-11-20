@@ -47,7 +47,7 @@ impl Opts {
         };
 
         // The pending vector allows us to handle things
-        // like -vv, and -vvm 3.
+        // like -vv, and -vvI 3.
         let mut pending: VecDeque<String> = VecDeque::new();
         let mut i = 1;
         let mut opt;

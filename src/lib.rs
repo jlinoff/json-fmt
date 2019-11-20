@@ -9,10 +9,12 @@ mod util;
 mod opts;
 use opts::{Opts};
 
+mod tests;
+
 pub fn run(cli: &Vec<String>) {
     let opts = Opts::new(cli);
     let input = read(&opts);
-    let output = format(&opts, &input);
+    let output = format_json(&opts, &input);
     write(&opts, &output);
     infov!(opts, 1, "done");
 }
@@ -45,7 +47,7 @@ pub fn read(opts: &Opts) -> String {
 }
 
 // Format the JSON.
-pub fn format(opts: &Opts, input: &String) -> String {
+pub fn format_json(opts: &Opts, input: &String) -> String {
     // Setup the indents.
     let mut indents = Vec::<String>::new();
     let mut indent_prefix = String::new();

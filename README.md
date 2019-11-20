@@ -35,7 +35,7 @@ $ # Get help.
 json-fmt --help
 ```
 
-## Simple Example
+## Simple example
 Here is a very simple example:
 ```bash
 $ cat test.json
@@ -58,7 +58,47 @@ $ cat test.json | json-fmt
 }
 ```
 
-## A More Complex Example
+## Simple example with an indent of 2
+The default indentation is 4 but sometimes it is useful to have a
+smaller indent. The example below shows an indent of 2 (specified by
+the -I option).
+```bash
+$ cat test.json
+{ "key": "value", "list1": [1, 2, 3, 4], "list2": ["a", "b", "c", "d"] }
+$ cat test.json | json-fmt -I 2
+{
+  "key": "value",
+  "list1": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "list2": [
+    "a",
+    "b",
+    "c",
+    "d"
+  ]
+}
+```
+
+## Example that uses -v to get information
+This example shows how to get information about the JSON file.
+```bash
+$ cat test.json
+{ "key": "value", "list1": [1, 2, 3, 4], "list2": ["a", "b", "c", "d"] }
+$ json-fmt -I 2 -i test.json -o /dev/null -v
+INFO:src/lib.rs:25: reading from file test.json
+INFO:src/lib.rs:43: read 73 bytes
+INFO:src/lib.rs:129: max-nesting-level: 2
+INFO:src/lib.rs:137: writing 119 bytes to file /dev/null
+INFO:src/lib.rs:17: done
+```
+This can be useful for seeing what the formatting will do without actually
+changing anything.
+
+## A more complex example
 A common use case is to look for fields in a large number of unformatted JSON files.
 
 Here is an example of analyzing a color field in 10000 unformatted JSON files.

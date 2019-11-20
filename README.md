@@ -1,3 +1,5 @@
+[![Releases](https://img.shields.io/github/release/jlinoff/json-fmt.svg?style=flat)](https://github.com/jlinoff/json-fmt/releases)
+
 # json-fmt
 Simple, fast JSON file formatter written in Rust
 

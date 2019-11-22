@@ -34,17 +34,8 @@ pub struct Opts {
 
 impl Opts {
     pub fn new(cli: &Vec<String>) -> Opts {
-        let base_ostr = Path::new(&cli[0]).file_stem().unwrap();
-        let base = base_ostr.to_str().unwrap().to_string();
-        let mut opts = Opts {
-            program: cli[0].to_string(),
-            program_base: base.to_string(),
-            depth: 32,
-            indent: 4,
-            input: None,  // stdin
-            output: None,  // stdout
-            verbose: 0,
-        };
+        let mut opts = Opts::defaults(&cli[0]);
+        let base = opts.program_base.to_string();
 
         // The pending vector allows us to handle things
         // like -vv, and -vvI 3.
@@ -111,6 +102,21 @@ impl Opts {
             }
             i += 1;
         }
+        opts
+    }
+
+    pub fn defaults(program: &String) -> Opts {
+        let base_ostr = Path::new(&program).file_stem().unwrap();
+        let base = base_ostr.to_str().unwrap().to_string();
+        let opts = Opts {
+            program: program.to_string(),
+            program_base: base.to_string(),
+            depth: 32,
+            indent: 4,
+            input: None,  // stdin
+            output: None,  // stdout
+            verbose: 0,
+        };
         opts
     }
 

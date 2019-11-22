@@ -7,15 +7,8 @@ mod tests {
     fn test_format_json() {
         // Verify that format works for a simple case.
         let input = String::from("{ \"key\": \"value\", \"list1\": [1, 2, 3, 4], \"list2\": [\"a\", \"b\", \"c\", \"d\"] }");
-        let opts = Opts {
-            program: String::from("my/tester"),
-            program_base: String::from("tester"),
-            depth: 32,
-            indent: 4,
-            input: None,
-            output: None,
-            verbose: 0,
-        };
+        let program = String::from("/test/format/json/tester");
+        let opts = Opts::defaults(&program);
         let output = format_json(&opts, &input);
         let good = String::from("\
 {
@@ -35,6 +28,7 @@ mod tests {
 }
 ");
         assert_eq!(output, good);
+        assert_eq!(opts.program_base, "tester".to_string());
     }
 
     #[test]
@@ -42,15 +36,9 @@ mod tests {
         // Verify that format works for a simple case
         // with a non-default indent (2).
         let input = String::from("{ \"key\": \"value\", \"list1\": [1, 2, 3, 4], \"list2\": [\"a\", \"b\", \"c\", \"d\"] }");
-        let opts = Opts {
-            program: String::from("my/tester"),
-            program_base: String::from("tester"),
-            depth: 32,
-            indent: 2,
-            input: None,
-            output: None,
-            verbose: 0,
-        };
+        let program = String::from("/test/format/json/tester");
+        let mut opts = Opts::defaults(&program);
+        opts.indent = 2;
         let output = format_json(&opts, &input);
         let good = String::from("\
 {

@@ -1,5 +1,5 @@
 # Docker image that can be used for cargo development.
-# Build as:yes
+# Build as:
 #   $ docker build -f Dockerfile.ubuntu-18.04 -t rust-ports/ubuntu:18.04 .
 # Run as:
 #   $ docker run -it --rm --init -v $(PWD):/mnt rust-ports/ubuntu:18.04 bash -ic 'cargo --version'

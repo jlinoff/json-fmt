@@ -1,0 +1,24 @@
+# Docker image that can be used for cargo development.
+# Build as:yes
+#   $ docker build -f Dockerfile.amazonlinux-2.0 -t rust-ports/amazonlinux:2.0 .
+# Run as:
+#   $ docker run -it --rm --init -v $(PWD):/mnt rust-ports/amazonlinux:2.0 bash -ic 'cargo --version'
+# Here is how to use it for a build:
+#   $ cd <rust-project>
+#   $ docker run -it --rm --init -v $(PWD):/mnt rust-ports/amazonlinux:2.0 bash -ic 'cargo build --target-dir ports/amazonlinux/2.0 --release'
+FROM amazonlinux:2
+
+# Install the basic OS requirements.
+RUN yum update -y && \
+    yum install -y curl git python-virtualenv tmux python3 htop tree && \
+    yum install -y vim emacs && \
+    yum install -y gcc make pkg-config openssl-devel
+
+# Install rust.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    . /root/.cargo/env && \
+    echo 'PATH="/root/.cargo/bin:$PATH"' >> /root/.bashrc
+
+ENV HOME=/root
+
+WORKDIR /mnt

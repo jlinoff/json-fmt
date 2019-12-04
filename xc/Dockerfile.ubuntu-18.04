@@ -1,0 +1,24 @@
+# Docker image that can be used for cargo development.
+# Build as:yes
+#   $ docker build -f Dockerfile.ubuntu-18.04 -t rust-ports/ubuntu:18.04 .
+# Run as:
+#   $ docker run -it --rm --init -v $(PWD):/mnt rust-ports/ubuntu:18.04 bash -ic 'cargo --version'
+# Here is how to use it for a build:
+#   $ cd <rust-project>
+#   $ docker run -it --rm --init -v $(PWD):/mnt rust-ports/ubuntu:18.04 bash -ic 'cargo build --target-dir ports/ubuntu/18.04 --release'
+FROM ubuntu:18.04
+
+# Install the basic OS requirements.
+RUN apt-get update && \
+    apt-get install -y curl git python-virtualenv tmux python3 htop tree && \
+    apt-get install -y vim emacs && \
+    apt-get install -y gcc make pkg-config libssl-dev
+
+# Install rust.
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    . /root/.cargo/env && \
+    echo 'PATH="/root/.cargo/bin:$PATH"' >> /root/.bashrc
+
+ENV HOME=/root
+
+WORKDIR /mnt

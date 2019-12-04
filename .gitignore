@@ -1,2 +1,4 @@
 *~
-targets/
+target/
+rust-ports/
+Cargo.lock

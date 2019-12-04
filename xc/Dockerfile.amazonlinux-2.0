@@ -1,5 +1,5 @@
 # Docker image that can be used for cargo development.
-# Build as:yes
+# Build as:
 #   $ docker build -f Dockerfile.amazonlinux-2.0 -t rust-ports/amazonlinux:2.0 .
 # Run as:
 #   $ docker run -it --rm --init -v $(PWD):/mnt rust-ports/amazonlinux:2.0 bash -ic 'cargo --version'

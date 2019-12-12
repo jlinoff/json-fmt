@@ -1,6 +1,6 @@
 [package]
 name = "json-fmt"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Joe Linoff"]
 edition = "2018"
 documentation = "https://github.com/jlinoff/json-fmt"

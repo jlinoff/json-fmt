@@ -106,6 +106,15 @@ impl Opts {
         opts
     }
 
+    /// The option defaults.
+    ///
+    /// Useful for initialization.
+    ///
+    /// # Arguments
+    /// * `program` - The name of the program.
+    ///
+    /// # Returns
+    /// The options object with the defaults filled in.
     pub fn defaults(program: &String) -> Opts {
         let base_ostr = Path::new(&program).file_stem().unwrap();
         let base = base_ostr.to_str().unwrap().to_string();

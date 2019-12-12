@@ -117,3 +117,16 @@ $ find files -type f | \
  844 blue
  152 green
 ```
+
+## How to generate the code documentation
+First create the documentation:
+```bash
+$ cargo doc --no-deps --document-private-items  --color always
+```
+
+Next start some sort of HTTP server.
+```bash
+$ python -m http.server -d target/doc 8080
+```
+
+Finally navigate to  http://localhost:8080/json_fmt/ in your browser.

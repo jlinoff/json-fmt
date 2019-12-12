@@ -155,7 +155,7 @@ impl Opts {
          844 blue
          152 green
 
-\x1b[mOPTIONS\x1b[0m
+\x1b[1mOPTIONS\x1b[0m
     -h, --help         Print this help message and exit.
 
     -i, --input FILE   The input file name. If this is not specified

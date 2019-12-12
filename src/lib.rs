@@ -1,3 +1,21 @@
+//! # json-fmt
+//! This tool formats JSON to make it more readable or simpler to
+//! analyze using tools like grep.
+//!
+//! # Program Help
+//! Help that describes how to use the program can be found by
+//! specifying the `--help` option.
+//!
+//! # Program Documentation
+//! How to generate this documentation.
+//!<pre>
+//!   $ cargo doc --no-deps --document-private-items  --color always
+//!</pre>
+//! To read it, first start a server of some sort.
+//!<pre>
+//!   $ python -m http.server -d target/doc 8080
+//!</pre>
+//! Then navigate to the following URL: http://localhost:8080/json_fmt/
 use std::process;
 use std::fs;
 use std::fs::File;
@@ -11,15 +29,44 @@ use opts::{Opts};
 
 mod tests;
 
+/// The primary entry point called by `main()` in `main.rs`.
+///
+/// It reads the input into a string, formats into another string and
+/// then writes it out. All of the data is stored in memory which will
+/// be a challenge for very large data files.
+///
+/// # Arguments
+/// * `cli` - A string vector that contains the command line arguments.
+///
+/// # Example
+/// <pre>
+/// use std::env;
+/// use json_fmt::{run};
+/// fn main() {
+///    let args: Vec<String> = env::args().collect();
+///    run(&args);
+/// }
+/// </pre>
 pub fn run(cli: &Vec<String>) {
     let opts = Opts::new(cli);
     let input = read(&opts);
-    let output = format_json(&opts, &input);
+    let output = format(&opts, &input);
     write(&opts, &output);
     infov!(opts, 1, "done");
 }
 
-// Read the input.
+/// Read the input.
+///
+/// It accepts input from stdin or from a file and returns the data
+/// read. It determines whether stdin should be read by looking for
+/// the `--input` argument. If it is present, then the input is
+/// assumed to be a file, otherwise it is stdin.
+///
+/// # Arguments
+/// * `opts` - The command line arguments.
+///
+/// # Returns
+/// The input data as a string.
 pub fn read(opts: &Opts) -> String {
     let mut data = String::new();
     if let Some(x) = &opts.input {
@@ -46,8 +93,23 @@ pub fn read(opts: &Opts) -> String {
     data
 }
 
-// Format the JSON.
-pub fn format_json(opts: &Opts, input: &String) -> String {
+/// Format the JSON.
+///
+/// It reads the input string and formats it.
+///
+/// The parser is very tolerant of failure. It does not care if
+/// the input is valid JSON.
+///
+/// There is a limit to the nesting depth that can be controlled by
+/// the `--depth` options.
+///
+/// # Arguments
+/// * `opts` - The command line arguments.
+/// * `input` - The input data.
+///
+/// # Returns
+/// * The formatted JSON string.
+pub fn format(opts: &Opts, input: &String) -> String {
     // Setup the indents.
     let mut indents = Vec::<String>::new();
     let mut indent_prefix = String::new();
@@ -64,7 +126,7 @@ pub fn format_json(opts: &Opts, input: &String) -> String {
     let size = vc.len() as usize;
     let mut max_nest = 0;
     let mut indent = 0 as i32;
-    let mut nl = false;
+    let mut nl = false;  // flag to indicate a newline is needed
     let mut i = 0 as usize;
     while i < size {
         if vc[i] == '{' || vc[i] == '[' {
@@ -113,7 +175,8 @@ pub fn format_json(opts: &Opts, input: &String) -> String {
             }
             output.push(vc[i]);  // get the last quote
         } else if vc[i] == ' ' || vc[i] == '\t' || vc[i] == '\n' {
-            // skip
+            // Skip white space, that is what the formatting
+            // is controlling.
         } else {
             if nl == true {
                 output.push('\n');
@@ -132,7 +195,16 @@ pub fn format_json(opts: &Opts, input: &String) -> String {
     output
 }
 
-// Write the formatted JSON out.
+/// Write the formatted JSON out.
+///
+/// It writes the formatted JSON to either stdout or a file depending
+/// on whether the `--output` option is set. If it is set, then it is
+/// assumed to be a file, otherwise it is stdout.
+///
+/// # Arguments
+/// * `opts` - The command line arguments.
+/// * `input` - The input data.
+///
 pub fn write(opts: &Opts, output: &String) {
     if let Some(x) = &opts.output {
         // File.

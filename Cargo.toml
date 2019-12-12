@@ -1,8 +1,13 @@
 [package]
 name = "json-fmt"
-version = "0.2.2"
-authors = ["jlinoff <jlinoff@gmail.com>"]
+version = "0.3.0"
+authors = ["Joe Linoff"]
 edition = "2018"
+documentation = "https://github.com/jlinoff/json-fmt"
+repository = "https://github.com/jlinoff/json-fmt"
+keywords = ["json", "format", "rust"]
+license = "MIT Open Source"
+publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

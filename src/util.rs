@@ -1,3 +1,4 @@
+//! Some useful utilities.
 #![macro_use]
 
 #[allow(unused_macros)]

@@ -1,3 +1,4 @@
+//! Command line options handling and help.
 use std::env;
 use std::process;
 use std::path::Path;
